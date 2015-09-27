@@ -71,7 +71,11 @@ Stream.prototype._transform = function ( data, enc, done ) {
 
     if ( this.parser ) {
         // parser found, delegate to it
-        return this.parser.write( data, enc, done );
+        return this.parser.write( data, enc, function () {
+            // note: we disregard the callback error because we're already
+            // forwarding all error events.
+            done();
+        });
     }
 
     this._sample = Buffer.concat( [ this._sample, data ] );
@@ -99,7 +103,6 @@ Stream.prototype._flush = function ( done ) {
         end( this.parser ); // ...and then immediately end it.
     }.bind( this ) )
 
-
     function end( parser ) {
 
         // if successful, wait for the data to be consumed and then 
@@ -107,10 +110,8 @@ Stream.prototype._flush = function ( done ) {
         parser.on( "end", done ); 
 
         // handle the case of error where there's no 'end' event
-        parser.end( function ( err ) {
-            if ( err ) {
-                done( err );
-            }
+        parser.end( function () {
+            done();
         })
     }
 }
@@ -128,12 +129,16 @@ Stream.prototype.start = function ( done ) {
     this.parser = parser
         .on( "data", function ( data ) {
             that.push( data );
+        })
+        .on( "error", function ( err ) {
+            that.emit( "error", err );
         });
 
     // start by writing the sampled data that has been collected until now
-    this.parser.write( this._sample, done );
+    this.parser.write( this._sample, function () {
+        done();
+    });
 }
-
 
 Stream.prototype.guess = function ( sample ) {
     return structurize.guess( sample )
