@@ -75,7 +75,7 @@ Stream.prototype._transform = function ( data, enc, done ) {
     }
 
     this._sample = Buffer.concat( [ this._sample, data ] );
-    if ( !this._sample.length < this._sampleSize ) {
+    if ( this._sample.length < this._sampleSize ) {
         // need more data to determine the format
         return done();
     }
