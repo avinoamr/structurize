@@ -1,0 +1,37 @@
+{
+  "name": "structurize",
+  "version": "1.0.0",
+  "description": "Text format hinting library for estimating the format of a given input string",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/avinoamr/structurize.git"
+  },
+  "keywords": [
+    "text",
+    "format",
+    "hint",
+    "guess",
+    "estimate",
+    "parse",
+    "structure",
+    "stream",
+    "json",
+    "json5",
+    "csv",
+    "tsv",
+    "querystring"
+  ],
+  "author": "Roi Avinoam <avinoamr@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/avinoamr/structurize/issues"
+  },
+  "homepage": "https://github.com/avinoamr/structurize",
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  }
+}
