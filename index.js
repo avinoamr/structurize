@@ -89,7 +89,6 @@ Stream.prototype._flush = function ( done ) {
     }
 
     this._flushcb = done;
-    this.parser.end();
 }
 
 Stream.prototype.start = function ( done ) {
@@ -107,7 +106,11 @@ Stream.prototype.start = function ( done ) {
             that.push( data );
         })
         .on( "error", function ( err ) {
-            that.emit( "error", err );
+            if ( that._flushcb ) {
+                that._flushcb( err );
+            } else {
+                that.emit( "error", err );
+            }
         })
         .on( "end", function () {
             that._flushcb();

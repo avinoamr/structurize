@@ -3,7 +3,7 @@ module.exports.type = "querystring";
 var REGEX = /^\??([\w-]+(=[\w-]*)(&[\w-]+(=[\w-]*)?)*)?$/
 
 module.exports.is = function isQueryString( sample ) {
-    var firstLine = sample.split( "\n" )
+    var firstLine = sample.toString().split( "\n" )
         .filter( function ( line ) {
             return !!line.trim()
         })[ 0 ];

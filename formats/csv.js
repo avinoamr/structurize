@@ -1,7 +1,7 @@
 module.exports.type = "csv";
 
 module.exports.is = function isCSV( sample ) {
-    return sample.split( "\n" )[ 0 ].indexOf( "," ) != -1;
+    return sample.toString().split( "\n" )[ 0 ].indexOf( "," ) != -1;
 }
 
 module.exports.parser = function () {

@@ -1,7 +1,7 @@
 module.exports.type = "tsv";
 
 module.exports.is = function isTSV( sample ) {
-    return sample.split( "\n" )[ 0 ].indexOf( "\t" ) != -1;
+    return sample.toString().split( "\n" )[ 0 ].indexOf( "\t" ) != -1;
 }
 
 module.exports.parser = function () {
