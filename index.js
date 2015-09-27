@@ -117,9 +117,7 @@ Stream.prototype.start = function ( done ) {
         });
 
     // start by writing the sampled data that has been collected until now
-    this.parser.write( this._sample );
-
-    done();
+    this.parser.write( this._sample, done );
 }
 
 
