@@ -32,7 +32,7 @@ structurize.parser = function ( type ) {
     })[ 0 ];
 
     if ( !format ) {
-        throw new Error( "Parser unrecognized format" );
+        throw new UnrecognizedFormatError();
     }
 
     if ( format.requires ) {
@@ -150,6 +150,15 @@ function MissingDependencyError( type, path ) {
         "of structurize."
     ].join( " " )
 }
+
+util.inherits( UnrecognizedFormatError, Error )
+function UnrecognizedFormatError( buffer ) {
+    this.name = "UnrecognizedFormatError";
+    this.code = "UNRECOGNIZED_FORMAT";
+    this.buffer = buffer;
+    this.message = "Unable to determine the format";
+}
+
 
 
 
