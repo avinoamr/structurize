@@ -69,9 +69,9 @@ Stream.prototype._transform = function ( data, enc, done ) {
         return done( null, data );
     }
 
-    if ( this.parser ) {
+    if ( this._parser ) {
         // parser found, delegate to it
-        return this.parser.write( data, enc, function () {
+        return this._parser.write( data, enc, function () {
             // note: we disregard the callback error because we're already
             // forwarding all error events.
             done();
@@ -88,9 +88,9 @@ Stream.prototype._transform = function ( data, enc, done ) {
 }
 
 Stream.prototype._flush = function ( done ) {
-    if ( this.parser ) {
+    if ( this._parser ) {
         // parser already started, just end it
-        return end( this.parser );
+        return end( this._parser );
     }
     
     // parser didn't start yet because the sample size is too small,
@@ -100,7 +100,7 @@ Stream.prototype._flush = function ( done ) {
             return done( err );
         }
 
-        end( this.parser ); // ...and then immediately end it.
+        end( this._parser ); // ...and then immediately end it.
     }.bind( this ) )
 
     function end( parser ) {
@@ -121,12 +121,12 @@ Stream.prototype.start = function ( done ) {
     var that = this;
 
     try {
-        var parser = structurize.parser( type )
+        var parser = this.parser( type )
     } catch ( err ) {
         return done( err );
     }
 
-    this.parser = parser
+    this._parser = parser
         .on( "data", function ( data ) {
             that.push( data );
         })
@@ -135,13 +135,18 @@ Stream.prototype.start = function ( done ) {
         });
 
     // start by writing the sampled data that has been collected until now
-    this.parser.write( this._sample, function () {
+    this._parser.write( this._sample, function () {
         done();
     });
 }
 
+// generic functions are wrapped here as methods for extensibility
 Stream.prototype.guess = function ( sample ) {
     return structurize.guess( sample )
+}
+
+Stream.prototype.parser = function ( type ) {
+    return structurize.parser( type )
 }
 
 util.inherits( MissingDependencyError, Error )
