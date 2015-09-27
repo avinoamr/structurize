@@ -84,11 +84,35 @@ Stream.prototype._transform = function ( data, enc, done ) {
 }
 
 Stream.prototype._flush = function ( done ) {
-    if ( !this.parser ) {
-        this.start( done );
+    if ( this.parser ) {
+        // parser already started, just end it
+        return end( this.parser );
     }
+    
+    // parser didn't start yet because the sample size is too small,
+    // start it now...
+    this.start( function ( err ) {
+        if ( err ) {
+            return done( err );
+        }
 
-    this._flushcb = done;
+        end( this.parser ); // ...and then immediately end it.
+    }.bind( this ) )
+
+
+    function end( parser ) {
+
+        // if successful, wait for the data to be consumed and then 
+        // end it.
+        parser.on( "end", done ); 
+
+        // handle the case of error where there's no 'end' event
+        parser.end( function ( err ) {
+            if ( err ) {
+                done( err );
+            }
+        })
+    }
 }
 
 Stream.prototype.start = function ( done ) {
@@ -104,16 +128,6 @@ Stream.prototype.start = function ( done ) {
     this.parser = parser
         .on( "data", function ( data ) {
             that.push( data );
-        })
-        .on( "error", function ( err ) {
-            if ( that._flushcb ) {
-                that._flushcb( err );
-            } else {
-                that.emit( "error", err );
-            }
-        })
-        .on( "end", function () {
-            that._flushcb();
         });
 
     // start by writing the sampled data that has been collected until now
