@@ -60,14 +60,11 @@ function Stream ( options ) {
     this.options = options || {};
     this._sampleSize = this.options.sampleSize || SAMPLE_SIZE;
     this._sample = new Buffer( "" );
+    this._totalWritten = 0;
 }
 
 Stream.prototype._transform = function ( data, enc, done ) {
-    if ( !( data instanceof Buffer ) ) {
-
-        // already structured
-        return done( null, data );
-    }
+    this._totalWritten += data.length;
 
     if ( this._parser ) {
         // parser found, delegate to it
@@ -88,6 +85,10 @@ Stream.prototype._transform = function ( data, enc, done ) {
 }
 
 Stream.prototype._flush = function ( done ) {
+    if ( this._totalWritten == 0 ) {
+        return done();
+    }
+
     if ( this._parser ) {
         // parser already started, just end it
         return end( this._parser );
