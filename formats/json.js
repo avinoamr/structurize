@@ -6,7 +6,7 @@ module.exports.is = function isJson( sample ) {
 }
 
 module.exports.parser = function () {
-    return require( "json5stream" )();
+    return require( "jsonstream2" ).parse();
 }
 
-module.exports.requires = [ "json5stream" ]
+module.exports.requires = [ "jsonstream2" ]

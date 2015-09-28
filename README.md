@@ -3,7 +3,7 @@ Text format hinting library for estimating the format of a given input string an
 
 Currently supports the following:
 
-* **json** (including [json5](http://json5.org/)), parsing with [json5stream](npmjs.com/package/json5stream)
+* **json**, parsing with [jsonstream2](https://www.npmjs.com/package/jsonstream2)
 * **csv**, parsing with [csv-parse](https://www.npmjs.com/package/csv-parse)
 * **tsv**, parsing with [csv-parse](https://www.npmjs.com/package/csv-parse)
 * **querystring**, parsing with [qs-stream](npmjs.com/package/qs-stream)
