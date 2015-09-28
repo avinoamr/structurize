@@ -64,7 +64,7 @@ function Stream ( options ) {
 }
 
 Stream.prototype._transform = function ( data, enc, done ) {
-    this._totalWritten += data.length;
+    this._totalWritten += data.toString().trim().length;
 
     if ( this._parser ) {
         // parser found, delegate to it
