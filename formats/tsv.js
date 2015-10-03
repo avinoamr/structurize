@@ -10,7 +10,8 @@ module.exports.parser = function () {
         skip_empty_lines: true, 
         escape: "\\", 
         columns: true, 
-        delimiter: "\t" 
+        delimiter: "\t",
+        relax: true, 
     })
 }
 
