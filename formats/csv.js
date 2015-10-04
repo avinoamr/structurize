@@ -9,7 +9,8 @@ module.exports.parser = function () {
     return csvparse({ 
         skip_empty_lines: true, 
         escape: "\\", 
-        columns: true 
+        columns: true,
+        relax: true, 
     })
 }
 
