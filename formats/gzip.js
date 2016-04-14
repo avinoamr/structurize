@@ -15,7 +15,7 @@ module.exports.is = function isGzip( sample ) {
 }
 
 module.exports.parser = function () {
-    
+    return require( "zlib" ).createGunzip();
 }
 
 module.exports.requires = []
