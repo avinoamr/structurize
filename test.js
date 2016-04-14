@@ -52,3 +52,16 @@ it( "no type for empty sample", function () {
     type = s.guess( "" );
     assert.equal( typeof type, "undefined" );
 })
+
+it( "structurizes jsons", function ( done ) {
+    var data = [];
+    s().on( "data", function ( d ) {
+        data.push( d );
+    })
+    .once( "end", function () {
+        assert.deepEqual( data, [ { ok: 1 } ] )
+        done();
+    })
+    .once( "error", done )
+    .end( JSON.stringify( { ok: 1 } ) )
+})
