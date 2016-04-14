@@ -1,23 +1,29 @@
 
 // POSIX IEEE P1003.1
 // https://en.wikipedia.org/wiki/Tar_(computing)
-// We want to relax the byte-range format in order to support plain
-// strings that are read from a tarball, instead of requiring the 
-// actual bytes array for parsing. 
-const REGEXP = /^[^\s]+\d{6}\ \d{6}\ \d{6}\ \d{11}\ \d{11}/;
+const REGEXP = /^[^\s]+\d{6}\s(.{10})/;
 
 module.exports.type = "tar";
 
 module.exports.is = function isTar( sample ) {
-    var line = sample.toString().split( "\n" )[ 0 ];
-    return REGEXP.test( line );
+    if ( !( sample instanceof Buffer ) ) {
+        return false; // only buffers can represent tarballs
+    }
+
+    // var fname = sample.slice( 0, 100 );
+    var mode = sample.slice( 100, 107 ).toString();
+    var owner = sample.slice( 108, 115 ).toString();
+    var group = sample.slice( 116, 123 ).toString();
+    var size = sample.slice( 124, 135 ).toString();
+
+    return mode && +mode > 111 && +mode < 777
+        && owner && !isNaN( owner )
+        && group && !isNaN( group )
+        && size && !isNaN( size );
 }
 
 module.exports.parser = function () {
-    var parser = require( "tar" ).Parser();
-    parser.on( "entry", function () {
-
-    })
+    return require( "tar" ).Parse();
 }
 
 module.exports.requires = [ "tar" ]
