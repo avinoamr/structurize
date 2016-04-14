@@ -48,12 +48,39 @@ it( "guesses gzip", function () {
     assert.equal( type, "gzip" );
 })
 
+it( "parses gzip", function ( done ) {
+    var data = [];
+    s.parser( "gzip" )
+        .on( "data", function ( d ) {
+            data.push( d );
+        })
+        .once( "end", function () {
+            assert.deepEqual( data, [ { ok: 1 } ] );
+            done();
+        })
+        .once( "error", done )
+        .end( zlib.gzipSync( JSON.stringify( { ok: 1 } ) ) )
+})
+
+it( "parse fails on invalid gzipped format", function ( done ) {
+    s.parser( "gzip" )
+        .on( "data", function () {})
+        .once( "end", function () {
+            done( new Error( "Expecting error" ) );
+        })
+        .once( "error", function ( err ) {
+            assert( /Unable to determine the format/gi.test( err.toString() ) );
+            done();
+        })
+        .end( zlib.gzipSync( "hello world" ) );
+})
+
 it( "no type for empty sample", function () {
     type = s.guess( "" );
     assert.equal( typeof type, "undefined" );
 })
 
-it( "structurizes jsons", function ( done ) {
+it( "structurize guess and parse", function ( done ) {
     var data = [];
     s().on( "data", function ( d ) {
         data.push( d );
@@ -65,3 +92,5 @@ it( "structurizes jsons", function ( done ) {
     .once( "error", done )
     .end( JSON.stringify( { ok: 1 } ) )
 })
+
+

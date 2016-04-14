@@ -1,3 +1,6 @@
+var overflow = require( "overflow" )
+var structurize = require( "../index" );
+
 module.exports.type = "gzip";
 
 module.exports.is = function isGzip( sample ) {
@@ -15,7 +18,9 @@ module.exports.is = function isGzip( sample ) {
 }
 
 module.exports.parser = function () {
-    return require( "zlib" ).createGunzip();
+    return overflow()
+        .substream( require( "zlib" ).createGunzip() )
+        .substream( structurize() ); // parse nested formats
 }
 
 module.exports.requires = []
