@@ -36,6 +36,11 @@ it( "guesses query strings", function () {
     assert.equal( type, "querystring" );
 })
 
+it( "guesses tar", function () {
+    type = s.guess( "one000644 000765 000024 00000000024 12703723146 012542" );
+    assert.equal( type, "tar" );
+})
+
 it( "no type for empty sample", function () {
     type = s.guess( "" );
     assert.equal( typeof type, "undefined" );

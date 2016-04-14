@@ -11,6 +11,7 @@ function structurize ( options ) {
 }
 
 structurize.formats = [
+    require( "./formats/tar" ),
     require( "./formats/json" ),
     require( "./formats/csv" ),
     require( "./formats/tsv" ),
