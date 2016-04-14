@@ -1,4 +1,5 @@
 var assert = require( "assert" );
+var zlib = require( "zlib" );
 var s = require( "./index" );
 var type;
 
@@ -39,6 +40,11 @@ it( "guesses query strings", function () {
 it( "guesses tar", function () {
     type = s.guess( "one000644 000765 000024 00000000024 12703723146 012542" );
     assert.equal( type, "tar" );
+})
+
+it( "guesses gzip", function () {
+    type = s.guess( zlib.gzipSync( "hello world" ) );
+    assert.equal( type, "gzip" );
 })
 
 it( "no type for empty sample", function () {
