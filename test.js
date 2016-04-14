@@ -38,7 +38,8 @@ it( "guesses query strings", function () {
 })
 
 it( "guesses tar", function () {
-    type = s.guess( "one000644 000765 000024 00000000024 12703723146 012542" );
+    var tarball = require( "fs" ).readFileSync( "./test.tar" );
+    type = s.guess( tarball );
     assert.equal( type, "tar" );
 })
 
