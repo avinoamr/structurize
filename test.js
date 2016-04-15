@@ -111,7 +111,7 @@ it( "structurize guess and parse", function ( done ) {
     .end( JSON.stringify( { ok: 1 } ) )
 })
 
-it( "parses tar.gz", function ( done ) {
+it( "structurizes tar.gz", function ( done ) {
     var tarball = require( "fs" ).readFileSync( "./test.tar" );
     var data = [];
     s().on( "data", function ( d ) {
