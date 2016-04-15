@@ -88,6 +88,7 @@ Stream.prototype._transform = function ( data, enc, done ) {
 }
 
 Stream.prototype._flush = function ( done ) {
+    var that = this;
     if ( this._totalWritten == 0 ) {
         return done();
     }
@@ -111,11 +112,13 @@ Stream.prototype._flush = function ( done ) {
 
         // if successful, wait for the data to be consumed and then 
         // end it.
-        parser.on( "end", done ); 
+        parser.on( "end", done );
 
         // handle the case of error where there's no 'end' event
-        parser.end( function () {
-            done();
+        parser.end( function ( err ) {
+            if ( err ) {
+                done( err );
+            }
         })
     }
 }

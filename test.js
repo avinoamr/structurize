@@ -68,7 +68,7 @@ it( "guesses gzip", function () {
 
 it( "parses gzip", function ( done ) {
     var data = [];
-    s.parser( "gzip" )
+    s()
         .on( "data", function ( d ) {
             data.push( d );
         })
@@ -114,7 +114,7 @@ it( "structurize guess and parse", function ( done ) {
 it( "parses tar.gz", function ( done ) {
     var tarball = require( "fs" ).readFileSync( "./test.tar" );
     var data = [];
-    s.parser( "gzip" ).on( "data", function ( d ) {
+    s().on( "data", function ( d ) {
         data.push( d )
     })
     .once( "end", function () {
