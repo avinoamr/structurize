@@ -3,6 +3,8 @@ Text format hinting library for estimating the format of a given input string an
 
 Currently supports the following:
 
+* **tar**, parsing with [tar](https://www.npmjs.com/package/tar)
+* **gzip**, parsing with [zlib](https://nodejs.org/api/zlib.html)
 * **json**, parsing with [jsonstream2](https://www.npmjs.com/package/jsonstream2)
 * **csv**, parsing with [csv-parse](https://www.npmjs.com/package/csv-parse)
 * **tsv**, parsing with [csv-parse](https://www.npmjs.com/package/csv-parse)

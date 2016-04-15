@@ -1,6 +1,6 @@
 {
   "name": "structurize",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Text format hinting library for estimating the format of a given input string",
   "main": "index.js",
   "scripts": {
