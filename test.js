@@ -111,4 +111,21 @@ it( "structurize guess and parse", function ( done ) {
     .end( JSON.stringify( { ok: 1 } ) )
 })
 
+it( "parses tar.gz", function ( done ) {
+    var tarball = require( "fs" ).readFileSync( "./test.tar" );
+    var data = [];
+    s.parser( "gzip" ).on( "data", function ( d ) {
+        data.push( d )
+    })
+    .once( "end", function () {
+        assert.deepEqual( data, [
+            { ok: 1 },
+            { hello: 1, world: 2 }
+        ])
+        done();
+    })
+    .once( "error", done )
+    .end( zlib.gzipSync( tarball ) )
+})
+
 
