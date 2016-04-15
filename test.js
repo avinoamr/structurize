@@ -43,6 +43,24 @@ it( "guesses tar", function () {
     assert.equal( type, "tar" );
 })
 
+it( "parses tar", function ( done ) {
+    var tarball = require( "fs" ).readFileSync( "./test.tar" );
+    var data = [];
+    s.parser( "tar" )
+        .on( "data", function ( d ) {
+            data.push( d )
+        })
+        .once( "end", function () {
+            assert.deepEqual( data, [
+                { ok: 1 },
+                { hello: 1, world: 2 }
+            ])
+            done();
+        })
+        .once( "error", done )
+        .end( tarball )
+})
+
 it( "guesses gzip", function () {
     type = s.guess( zlib.gzipSync( "hello world" ) );
     assert.equal( type, "gzip" );
