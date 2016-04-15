@@ -63,6 +63,7 @@ function Stream ( options ) {
     this._sampleSize = this.options.sampleSize || SAMPLE_SIZE;
     this._sample = new Buffer( "" );
     this._totalWritten = 0;
+    this.type = null; // type unidentified
 }
 
 Stream.prototype._transform = function ( data, enc, done ) {
@@ -120,11 +121,11 @@ Stream.prototype._flush = function ( done ) {
 }
 
 Stream.prototype.start = function ( done ) {
-    var type = this.guess( this._sample );
+    this.type = this.guess( this._sample );
     var that = this;
 
     try {
-        var parser = this.parser( type )
+        var parser = this.parser( this.type )
     } catch ( err ) {
         return done( err );
     }
