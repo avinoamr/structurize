@@ -20,15 +20,15 @@ structurize.formats = [
 ]
 
 
-structurize.guess = function ( sample ) {
+structurize.guess = function ( sample, delimiter ) {
     for ( var i = 0 ; i < this.formats.length ; i += 1 ) {
-        if ( this.formats[ i ].is( sample ) ) {
+        if ( this.formats[ i ].is( sample, delimiter ) ) {
             return this.formats[ i ].type;
         }
     }
 }
 
-structurize.parser = function ( type ) {
+structurize.parser = function ( type, delimiter ) {
     var format = structurize.formats.filter( function ( format ) {
         return format.type == type;
     })[ 0 ];
@@ -50,7 +50,7 @@ structurize.parser = function ( type ) {
         })
     }
 
-    return format.parser()
+    return format.parser( delimiter )
 }
 
 structurize.Stream = Stream;
@@ -124,11 +124,11 @@ Stream.prototype._flush = function ( done ) {
 }
 
 Stream.prototype.start = function ( done ) {
-    this.type = this.guess( this._sample );
+    this.type = this.guess( this._sample, this.options.delimiter );
     var that = this;
 
     try {
-        var parser = this.parser( this.type )
+        var parser = this.parser( this.type, this.options.delimiter )
     } catch ( err ) {
         return done( err );
     }
@@ -148,12 +148,12 @@ Stream.prototype.start = function ( done ) {
 }
 
 // generic functions are wrapped here as methods for extensibility
-Stream.prototype.guess = function ( sample ) {
-    return structurize.guess( sample )
+Stream.prototype.guess = function ( sample, delimiter ) {
+    return structurize.guess( sample, delimiter )
 }
 
-Stream.prototype.parser = function ( type ) {
-    return structurize.parser( type )
+Stream.prototype.parser = function ( type, delimiter ) {
+    return structurize.parser( type, delimiter )
 }
 
 util.inherits( MissingDependencyError, Error )
@@ -175,8 +175,3 @@ function UnrecognizedFormatError( buffer ) {
     this.buffer = buffer;
     this.message = "Unable to determine the format";
 }
-
-
-
-
-
