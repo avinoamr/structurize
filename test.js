@@ -24,6 +24,12 @@ it( "guesses csv", function () {
     assert.equal( type, "csv" );
 })
 
+it( "guesses csv with $ as delimiter", function () {
+    var delimiter = '$'
+    type = s.guess( new Buffer( "hello$world$foo$bar" ), delimiter );
+    assert.equal( type, "csv" );
+})
+
 it( "guesses tsv", function () {
     type = s.guess( new Buffer( "hello\tworld\tfoo\tbar" ) );
     assert.equal( type, "tsv" );
@@ -59,6 +65,24 @@ it( "parses tar", function ( done ) {
         })
         .once( "error", done )
         .end( tarball )
+})
+
+it( "parses csv with $ as delimiter", function ( done ) {
+    var csvball = require( "fs" ).readFileSync( "./test.csv" );
+    var data = [];
+    var delimiter = '$'
+    s.parser( "csv", delimiter )
+        .on( "data", function ( d ) {
+            data.push( d )
+        })
+        .once( "end", function () {
+            assert.deepEqual( data, [
+                { hello: '1', world: '2' }
+            ])
+            done();
+        })
+        .once( "error", done )
+        .end( csvball )
 })
 
 it( "guesses gzip", function () {
