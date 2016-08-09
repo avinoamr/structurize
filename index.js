@@ -20,15 +20,15 @@ structurize.formats = [
 ]
 
 
-structurize.guess = function ( sample, delimiter ) {
+structurize.guess = function ( sample ) {
     for ( var i = 0 ; i < this.formats.length ; i += 1 ) {
-        if ( this.formats[ i ].is( sample, delimiter ) ) {
+        if ( this.formats[ i ].is( sample ) ) {
             return this.formats[ i ].type;
         }
     }
 }
 
-structurize.parser = function ( type, delimiter ) {
+structurize.parser = function ( type, options ) {
     var format = structurize.formats.filter( function ( format ) {
         return format.type == type;
     })[ 0 ];
@@ -50,7 +50,7 @@ structurize.parser = function ( type, delimiter ) {
         })
     }
 
-    return format.parser( delimiter )
+    return format.parser( options )
 }
 
 structurize.Stream = Stream;
@@ -124,11 +124,15 @@ Stream.prototype._flush = function ( done ) {
 }
 
 Stream.prototype.start = function ( done ) {
-    this.type = this.guess( this._sample, this.options.delimiter );
+    if ( this.options.delimiter ) {
+        this.type = 'csv'
+    } else {
+        this.type = this.guess( this._sample );
+    }
     var that = this;
 
     try {
-        var parser = this.parser( this.type, this.options.delimiter )
+        var parser = this.parser( this.type, this.options )
     } catch ( err ) {
         return done( err );
     }
@@ -148,12 +152,12 @@ Stream.prototype.start = function ( done ) {
 }
 
 // generic functions are wrapped here as methods for extensibility
-Stream.prototype.guess = function ( sample, delimiter ) {
-    return structurize.guess( sample, delimiter )
+Stream.prototype.guess = function ( sample ) {
+    return structurize.guess( sample )
 }
 
-Stream.prototype.parser = function ( type, delimiter ) {
-    return structurize.parser( type, delimiter )
+Stream.prototype.parser = function ( type, options ) {
+    return structurize.parser( type, options )
 }
 
 util.inherits( MissingDependencyError, Error )
