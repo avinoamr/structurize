@@ -124,7 +124,12 @@ Stream.prototype._flush = function ( done ) {
 }
 
 Stream.prototype.start = function ( done ) {
-    if ( this.options.delimiter ) {
+    var hasDelimiter = this.options.delimiter
+    var validDelimiter;
+    if ( hasDelimiter ) {
+        validDelimiter = this.options.delimiter !== '' && this.options.delimiter.length === 1
+    }
+    if ( hasDelimiter && validDelimiter ) {
         this.type = 'csv'
     } else {
         this.type = this.guess( this._sample );
