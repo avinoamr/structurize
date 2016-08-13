@@ -61,6 +61,26 @@ it( "parses tar", function ( done ) {
         .end( tarball )
 })
 
+it( "parses csv with $ as delimiter", function ( done ) {
+    var csvball = require( "fs" ).readFileSync( "./test.csv" );
+    var data = [];
+    var options = {
+        delimiter: '$'
+    }
+    s.parser( "csv", options )
+        .on( "data", function ( d ) {
+            data.push( d )
+        })
+        .once( "end", function () {
+            assert.deepEqual( data, [
+                { hello: '1', world: '2' }
+            ])
+            done();
+        })
+        .once( "error", done )
+        .end( csvball )
+})
+
 it( "guesses gzip", function () {
     type = s.guess( zlib.gzipSync( "hello world" ) );
     assert.equal( type, "gzip" );

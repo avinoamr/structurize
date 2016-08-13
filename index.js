@@ -28,7 +28,7 @@ structurize.guess = function ( sample ) {
     }
 }
 
-structurize.parser = function ( type ) {
+structurize.parser = function ( type, options ) {
     var format = structurize.formats.filter( function ( format ) {
         return format.type == type;
     })[ 0 ];
@@ -50,7 +50,7 @@ structurize.parser = function ( type ) {
         })
     }
 
-    return format.parser()
+    return format.parser( options )
 }
 
 structurize.Stream = Stream;
@@ -124,11 +124,20 @@ Stream.prototype._flush = function ( done ) {
 }
 
 Stream.prototype.start = function ( done ) {
-    this.type = this.guess( this._sample );
+    var hasDelimiter = this.options.delimiter
+    var validDelimiter;
+    if ( hasDelimiter ) {
+        validDelimiter = this.options.delimiter !== '' && this.options.delimiter.length === 1
+    }
+    if ( hasDelimiter && validDelimiter ) {
+        this.type = 'csv'
+    } else {
+        this.type = this.guess( this._sample );
+    }
     var that = this;
 
     try {
-        var parser = this.parser( this.type )
+        var parser = this.parser( this.type, this.options )
     } catch ( err ) {
         return done( err );
     }
@@ -152,8 +161,8 @@ Stream.prototype.guess = function ( sample ) {
     return structurize.guess( sample )
 }
 
-Stream.prototype.parser = function ( type ) {
-    return structurize.parser( type )
+Stream.prototype.parser = function ( type, options ) {
+    return structurize.parser( type, options )
 }
 
 util.inherits( MissingDependencyError, Error )
@@ -175,8 +184,3 @@ function UnrecognizedFormatError( buffer ) {
     this.buffer = buffer;
     this.message = "Unable to determine the format";
 }
-
-
-
-
-
