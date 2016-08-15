@@ -64,10 +64,7 @@ it( "parses tar", function ( done ) {
 it( "parses csv with $ as delimiter", function ( done ) {
     var csvball = require( "fs" ).readFileSync( "./test.csv" );
     var data = [];
-    var options = {
-        delimiter: '$'
-    }
-    s.parser( "csv", options )
+    s.parser( "csv", { delimiter: "$" } )
         .on( "data", function ( d ) {
             data.push( d )
         })
@@ -148,4 +145,14 @@ it( "structurizes tar.gz", function ( done ) {
     .end( zlib.gzipSync( tarball ) )
 })
 
+
+// it.only( "supports multiple files stream", function ( done ) {
+//     var tarball = require( "fs" ).readFileSync( "./test.tar" );
+//     var gzipped = zlib.gzipSync( tarball )
+//     s.multi()
+//         .on( "data", function ( d ) {
+//             console.log("roi", d)
+//         })
+//         .end(gzipped)
+// })
 

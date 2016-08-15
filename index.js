@@ -5,7 +5,6 @@ var SAMPLE_SIZE = 16 * 1024; // 16kb
 
 module.exports = structurize;
 
-
 function structurize ( options ) {
     return new Stream( options );
 }
@@ -20,9 +19,9 @@ structurize.formats = [
 ]
 
 
-structurize.guess = function ( sample ) {
+structurize.guess = function ( sample, options ) {
     for ( var i = 0 ; i < this.formats.length ; i += 1 ) {
-        if ( this.formats[ i ].is( sample ) ) {
+        if ( this.formats[ i ].is( sample, options ) ) {
             return this.formats[ i ].type;
         }
     }
@@ -124,16 +123,7 @@ Stream.prototype._flush = function ( done ) {
 }
 
 Stream.prototype.start = function ( done ) {
-    var hasDelimiter = this.options.delimiter
-    var validDelimiter;
-    if ( hasDelimiter ) {
-        validDelimiter = this.options.delimiter !== '' && this.options.delimiter.length === 1
-    }
-    if ( hasDelimiter && validDelimiter ) {
-        this.type = 'csv'
-    } else {
-        this.type = this.guess( this._sample );
-    }
+    this.type = this.guess( this._sample );
     var that = this;
 
     try {
@@ -158,7 +148,7 @@ Stream.prototype.start = function ( done ) {
 
 // generic functions are wrapped here as methods for extensibility
 Stream.prototype.guess = function ( sample ) {
-    return structurize.guess( sample )
+    return structurize.guess( sample, this.options )
 }
 
 Stream.prototype.parser = function ( type, options ) {

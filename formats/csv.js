@@ -1,8 +1,10 @@
 module.exports.type = "csv";
 var DEFAULT_DELIMITER = ','
 
-module.exports.is = function isCSV( sample ) {
-    return sample.toString().split( "\n" )[ 0 ].indexOf( DEFAULT_DELIMITER ) != -1;
+module.exports.is = function isCSV( sample, options ) {
+    options = options || {}
+    return options.delimiter ||
+        sample.toString().split( "\n" )[ 0 ].indexOf( DEFAULT_DELIMITER ) != -1;
 }
 
 module.exports.parser = function ( options ) {
