@@ -61,8 +61,8 @@ it( "parses tar", function ( done ) {
         .end( tarball )
 })
 
-it( "parses csv with $ as delimiter", function ( done ) {
-    var csvball = require( "fs" ).readFileSync( "./test.csv" );
+it( "parses csv with a configured delimiter", function ( done ) {
+    var csv = require( "fs" ).readFileSync( "./test.csv" );
     var data = [];
     s.parser( "csv", { delimiter: "$" } )
         .on( "data", function ( d ) {
@@ -75,7 +75,7 @@ it( "parses csv with $ as delimiter", function ( done ) {
             done();
         })
         .once( "error", done )
-        .end( csvball )
+        .end( csv )
 })
 
 it( "guesses gzip", function () {
@@ -146,13 +146,67 @@ it( "structurizes tar.gz", function ( done ) {
 })
 
 
-// it.only( "supports multiple files stream", function ( done ) {
-//     var tarball = require( "fs" ).readFileSync( "./test.tar" );
-//     var gzipped = zlib.gzipSync( tarball )
-//     s.multi()
-//         .on( "data", function ( d ) {
-//             console.log("roi", d)
-//         })
-//         .end(gzipped)
-// })
+it( "supports map and filter", function ( done ) {
+    var data = [];
+    
+    var stream = s()
+        .on( "data", function ( d ) {
+            data.push(d)
+        })
+        .map(function ( d ) {
+            if ( d.skip ) {
+                return
+            }
+
+            d.foo = "bar"
+            return d
+        })
+        .once( "end", function () {
+            assert.deepEqual( data, [
+                { hello: "world", foo: "bar" }
+            ])
+            done()
+        })
+        .once( "error", done );
+
+    stream.write( JSON.stringify({ skip: true }) )
+    stream.end( JSON.stringify({ hello: "world" }) )
+})
+
+
+it( "supports multiple files stream", function ( done ) {
+    var tarball = require( "fs" ).readFileSync( "./test.tar" );
+    var gzipped = zlib.gzipSync( tarball )
+    gzipped.name = "test.tgz"
+
+    var json = new Buffer( JSON.stringify({ "hello": "world" }) )
+    json.name = "something.json"
+
+    var data = []
+    var m = s.multi()
+        .on( "error", done )
+        .on( "data", function ( d ) {
+            data.push( d )
+        })
+        .on("end", function () {
+            assert.deepEqual( data, [
+                { foo: "bar" },
+                { hello: "world", filename: "something.json" },
+                { ok: 1, filename: "test.tgz" },
+                { hello: 1, world: 2, filename: "test.tgz" }
+            ])
+            done()
+        })
+        .on( "subparser", function ( name, p ) {
+            p.map(function ( d ) {
+                d.filename = name
+                return d
+            })
+        })
+
+    m.write({ foo: "bar" })
+    m.write( json )
+    m.write( gzipped )
+    m.end()
+})
 
