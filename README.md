@@ -47,5 +47,43 @@ fs.createReadStream( "somefile.unknown" )
   })
 ```
 
+This `structurize()` stream supports a helper function for modifying/filtering the parsed output before pushing it out by defining a mapper function:
+
+```javascript
+structurize()
+  .map(function (d) {
+    d.name = "cookie"; 
+    return d; // or return nothing (undefined) to filter it out.
+  })
+```
+
+#### Multi
+
+It's common to have multiple inputs with different formats, and wanting to parse all of them via a single stream, for example when reading a list of unidentified files.  `structurize.multi` is a helper stream supporting this use case:
+
+```javascript
+m = structurize.multi()
+m.write({ hello: "world" }) // already an object, left as is.
+m.write('{"foo":"bar"}') // identified and parsed as a json
+
+m.on( "data", console.log ) // => { "hello": "world" }\n{ "foo": "bar" }
+```
+
+Of course, structurize needs to be able to differentiate between the different files in the stream in order to direct them to different sub-parsers. You can tag your input buffers/strings with their names, like a filename, to avoid having all of the inputs stream though to a single parser:
+
+```javascript
+var buf = new String('{"hello":"world"}')
+buf.name = "filename1"
+m.write(buf)
+```
+
+Finally, you may want to configure the individual sub-parsers with different options or mapper. The `multi` stream fires a `subparser` event whenever a new parser is created, along with its name and the parser object. You can configure this nested `structurize` stream individually:
+
+```javascript
+m.on("subparser", function( name, s ) {
+  s.map( ... )
+})
+```
+
 
 
