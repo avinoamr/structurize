@@ -197,8 +197,8 @@ it( "supports multiple files stream", function ( done ) {
             ])
             done()
         })
-        .on( "subparser", function ( name, p ) {
-            p.map(function ( d ) {
+        .on( "subparser", function ( name, parser ) {
+            parser.map(function ( d ) {
                 d.filename = name
                 return d
             })

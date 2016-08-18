@@ -66,7 +66,7 @@ function Stream ( options ) {
     this._sampleSize = this.options.sampleSize || SAMPLE_SIZE;
     this._sample = new Buffer( "" );
     this._totalWritten = 0;
-    this._mapfn = function( d ) { return d }
+    this._mapfn = function( d ) { return d } // see Stream.prototype.map
     this.type = null; // type unidentified
 }
 
