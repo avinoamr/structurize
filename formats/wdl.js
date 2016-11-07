@@ -1,4 +1,4 @@
-module.exports.type = "WDL";
+module.exports.type = "wdl";
 var INDEX0_SIG = "#Version:";
 var INDEX1_SIG = "#Fields:"
 
