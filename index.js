@@ -20,6 +20,7 @@ structurize.formats = [
 
 
 structurize.guess = function ( sample, options ) {
+    console.log('&&&&&&&AMEN&&&&&&&&&&&&&&&&&&&&&&&&&&&&');
     for ( var i = 0 ; i < this.formats.length ; i += 1 ) {
         if ( this.formats[ i ].is( sample, options ) ) {
             return this.formats[ i ].type;
