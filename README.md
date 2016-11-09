@@ -9,6 +9,7 @@ Currently supports the following:
 * **csv**, parsing with [csv-parse](https://www.npmjs.com/package/csv-parse)
 * **tsv**, parsing with [csv-parse](https://www.npmjs.com/package/csv-parse)
 * **querystring**, parsing with [qs-stream](npmjs.com/package/qs-stream)
+* **WebDistributionLog**, parsing with [wdl-stream](https://www.npmjs.com/package/wdl-stream)
 
 > **NOTE**: it's generally a bad idea to "guess" the format of an input semi-structured text file, because there are endless edge cases. It's always advised to use an explicit format type from the user, using the file extension or otherwise. The library attempts to cover most obvious situations.
 
