@@ -16,6 +16,7 @@ structurize.formats = [
     require( "./formats/csv" ),
     require( "./formats/tsv" ),
     require( "./formats/querystring" ),
+    require( "./formats/wdl" ),
 ]
 
 
