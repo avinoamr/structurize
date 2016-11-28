@@ -10,11 +10,11 @@ module.exports.is = function isCSV( sample, options ) {
 module.exports.parser = function ( options ) {
     var useDelimiter = options.delimiter || DEFAULT_DELIMITER;
     var csvparse = require( "csv-parse" );
-    return csvparse({ 
-        skip_empty_lines: true, 
-        escape: "\\", 
-        columns: true,
-        relax: true, 
+    return csvparse({
+        skip_empty_lines: true,
+        escape: "\\",
+        columns: options.columns || true,
+        relax: true,
         delimiter: useDelimiter
     })
 }

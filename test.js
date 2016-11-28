@@ -78,6 +78,22 @@ it( "parses csv with a configured delimiter", function ( done ) {
         .end( csv )
 })
 
+it('parse csv with a configured column', function(done) {
+    var csv = require('fs').readFileSync('./test.csv');
+    var columns = ['a', 'b']
+    var data = [];
+    s.parser('csv', {columns: columns, delimiter: "$"})
+        .on('data', function(d){
+            data.push(d)
+        })
+        .once('end', function () {
+            assert.deepEqual(Object.keys(data[0]), columns)
+            done()
+        })
+        .once('error', done)
+        .end(csv)
+})
+
 it( "guesses gzip", function () {
     type = s.guess( zlib.gzipSync( "hello world" ) );
     assert.equal( type, "gzip" );
@@ -148,7 +164,7 @@ it( "structurizes tar.gz", function ( done ) {
 
 it( "supports map and filter", function ( done ) {
     var data = [];
-    
+
     var stream = s()
         .on( "data", function ( d ) {
             data.push(d)
@@ -209,4 +225,3 @@ it( "supports multiple files stream", function ( done ) {
     m.write( gzipped )
     m.end()
 })
-
