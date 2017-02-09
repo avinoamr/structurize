@@ -1,3 +1,4 @@
+var util = require("util")
 var stream = require("stream")
 module.exports.type = "xlsx"
 
@@ -14,57 +15,63 @@ module.exports.is = function isCSV( sample, options ) {
 }
 
 module.exports.parser = function ( options ) {
-    var xlsx = require( "xlsx" )
-    var buff = new Buffer([])
-    var t = new stream.Transform({ readableObjectMode: true })
-    t._transform = function (data, enc, done) {
-        buff = Buffer.concat([buff, data])
-        done()
-    }
-
-    t._flush = function (done) {
-        try {
-            var workbook = xlsx.read(buff)
-        } catch (err) {
-            done(err)
-            return
-        }
-
-        var regexp = /([A-Z]+)([0-9]+)/i
-
-        var all = []
-        workbook.SheetNames.forEach(function (name) {
-            var sheet = workbook.Sheets[name]
-            var data = []
-            for (var k in sheet) {
-                if (k[0] == '!') {
-                    continue
-                }
-
-                var comps = k.match(regexp)
-                var col = comps[1]
-                var row = comps[2]
-
-                if (row == '1') {
-                    continue
-                }
-
-                if (!data[row]) {
-                    data[row] = { __sheet: name }
-                }
-
-                var h = sheet[col + '1'].v
-                data[row][h] = sheet[k].v
-            }
-
-            data.filter(Boolean).forEach(function (d) {
-                this.push(d)
-            }, this)
-        }, this)
-        done(null)
-    }
-
-    return t
+    return new Stream()
 }
 
 module.exports.requires = [ "xlsx" ]
+
+util.inherits(Stream, stream.Transform)
+function Stream() {
+    stream.Transform.call(this, { readableObjectMode: true })
+    this._buff = new Buffer([])
+}
+
+Stream.prototype._transform = function (data, enc, done) {
+    this._buff = Buffer.concat([this._buff, data])
+    done()
+}
+
+Stream.prototype._flush = function (done) {
+    var xlsx = require( "xlsx" )
+    try {
+        var workbook = xlsx.read(this._buff)
+    } catch (err) {
+        done(err)
+        return
+    }
+
+    var regexp = /([A-Z]+)([0-9]+)/i
+    workbook.SheetNames.forEach(function (name) {
+        var sheet = workbook.Sheets[name]
+        var data = []
+        for (var k in sheet) {
+            if (k[0] == '!') {
+                continue // Only keep normal cells, not metadata.
+            }
+
+            // k is a cell name, i.e. "A1", "C9". Split it into the row and col
+            var comps = k.match(regexp)
+            var col = comps[1]
+            var row = comps[2]
+            if (row == '1') {
+                continue // first row is reserved as the header line
+            }
+
+            if (!data[row]) {
+                data[row] = { __sheet: name }
+            }
+
+            // extract the header name value from the first row for this col
+            var h = sheet[col + '1'].v
+            data[row][h] = sheet[k].v
+        }
+
+        // the data list may contain some empty undefined cells (at rows 0 and
+        // 1). Filter these out.
+        data.filter(Boolean).forEach(function (d) {
+            this.push(d)
+        }, this)
+    }, this)
+
+    done(null)
+}
