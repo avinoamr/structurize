@@ -8,6 +8,7 @@ Currently supports the following:
 * **json**, parsing with [jsonstream2](https://www.npmjs.com/package/jsonstream2)
 * **csv**, parsing with [csv-parse](https://www.npmjs.com/package/csv-parse)
 * **tsv**, parsing with [csv-parse](https://www.npmjs.com/package/csv-parse)
+* **xlsx**, parsing with [xlsx](https://www.npmjs.com/package/xlsx)
 * **querystring**, parsing with [qs-stream](npmjs.com/package/qs-stream)
 * **WebDistributionLog**, parsing with [wdl-stream](https://www.npmjs.com/package/wdl-stream)
 
@@ -53,7 +54,7 @@ This `structurize()` stream supports a helper function for modifying/filtering t
 ```javascript
 structurize()
   .map(function (d) {
-    d.name = "cookie"; 
+    d.name = "cookie";
     return d; // or return nothing (undefined) to filter it out.
   })
 ```
@@ -85,6 +86,3 @@ m.on("subparser", function( name, s ) {
   s.map( ... )
 })
 ```
-
-
-
