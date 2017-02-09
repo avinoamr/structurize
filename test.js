@@ -3,6 +3,12 @@ var zlib = require( "zlib" );
 var s = require( "./index" );
 var type;
 
+it( "guesses xlsx", function () {
+    var spreadsheet = require( "fs" ).readFileSync( "./test.xlsx" );
+    type = s.guess(spreadsheet)
+    assert.equal( type, "xlsx" )
+})
+
 it( "guesses json", function () {
 
     type = s.guess( new Buffer( JSON.stringify({ "hello": "world" }) ) )

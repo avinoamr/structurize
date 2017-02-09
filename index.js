@@ -10,6 +10,7 @@ function structurize ( options ) {
 }
 
 structurize.formats = [
+    require( "./formats/xlsx" ),
     require( "./formats/tar" ),
     require( "./formats/gzip" ),
     require( "./formats/json" ),
@@ -102,7 +103,7 @@ Stream.prototype._flush = function ( done ) {
         // parser already started, just end it
         return end( this._parser );
     }
-    
+
     // parser didn't start yet because the sample size is too small,
     // start it now...
     this.start( function ( err ) {
@@ -115,7 +116,7 @@ Stream.prototype._flush = function ( done ) {
 
     function end( parser ) {
 
-        // if successful, wait for the data to be consumed and then 
+        // if successful, wait for the data to be consumed and then
         // end it.
         parser.on( "end", done );
 
@@ -186,7 +187,7 @@ Stream.prototype.parser = function ( type, options ) {
 //      var json = new String("{}")
 //      json.name = "file1.json"
 //      multi.write( json )
-//      
+//
 //      var csv = new String("hello, world")
 //      csv.name = "file2.csv"
 //      multi.write( csv )
@@ -271,7 +272,7 @@ function MissingDependencyError( type, path ) {
     this.name = "MissingDependencyError";
     this.code = "MODULE_NOT_FOUND";
     this.message = [
-        "Missing parser dependency for", 
+        "Missing parser dependency for",
         type + ":", '"' + path + '".',
         "The", '"' + path + '"', "module is not a dependency",
         "of structurize."
