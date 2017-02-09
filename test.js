@@ -49,6 +49,30 @@ it( "guesses tar", function () {
     assert.equal( type, "tar" );
 })
 
+it( "parses xlsx", function ( done ) {
+    var spreadsheet = require( "fs" ).readFileSync( "./test.xlsx" );
+    var data = [];
+    s.parser( "xlsx" )
+        .on( "data", function (d) {
+            data.push(d)
+        })
+        .once("end", function () {
+            assert.deepEqual( data, [
+                { __sheet: "2017", Movie: "La La Land", Nominations: 5 },
+                { __sheet: "2017", Movie: "Moonlight", Nominations: 5 },
+                { __sheet: "2017", Movie: "Fences", Nominations: 4 },
+                { __sheet: "2017", Movie: "Lion", Nominations: 4 },
+                { __sheet: "2016", Movie: "Spotlight", Nominations: 5 },
+                { __sheet: "2016", Movie: "Room", Nominations: 4 },
+                { __sheet: "2016", Movie: "The Big Short", Nominations: 4 },
+                { __sheet: "2016", Movie: "The Revenant", Nominations: 4 }
+            ])
+            done();
+        })
+        .once( "error", done )
+        .end(spreadsheet)
+})
+
 it( "parses tar", function ( done ) {
     var tarball = require( "fs" ).readFileSync( "./test.tar" );
     var data = [];
