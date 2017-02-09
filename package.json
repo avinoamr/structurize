@@ -39,6 +39,6 @@
     "xlsx": "^0.8.2"
   },
   "dependencies": {
-    "overflow": "1.1.4",
+    "overflow": "1.1.4"
   }
 }
