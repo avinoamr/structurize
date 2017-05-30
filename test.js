@@ -58,14 +58,46 @@ it( "parses xlsx", function ( done ) {
         })
         .once("end", function () {
             assert.deepEqual( data, [
-                { __sheet: "2017", Movie: "La La Land", Nominations: 5 },
-                { __sheet: "2017", Movie: "Moonlight", Nominations: 5 },
-                { __sheet: "2017", Movie: "Fences", Nominations: 4 },
-                { __sheet: "2017", Movie: "Lion", Nominations: 4 },
-                { __sheet: "2016", Movie: "Spotlight", Nominations: 5 },
-                { __sheet: "2016", Movie: "Room", Nominations: 4 },
-                { __sheet: "2016", Movie: "The Big Short", Nominations: 4 },
-                { __sheet: "2016", Movie: "The Revenant", Nominations: 4 }
+                { __sheet: "2017",
+                    Movie: "La La Land",
+                    Nominations: 5,
+                    Date: "2017-01-01"
+                },
+                { __sheet: "2017",
+                    Movie: "Moonlight",
+                    Nominations: 5,
+                    Date: "2017-01-02"
+                },
+                { __sheet: "2017",
+                    Movie: "Fences",
+                    Nominations: 4,
+                    Date: "2017-01-03"
+                },
+                { __sheet: "2017",
+                    Movie: "Lion",
+                    Nominations: 4,
+                    Date: "2017-01-04"
+                },
+                { __sheet: "2016",
+                    Movie: "Spotlight",
+                    Nominations: 5,
+                    Date: "2016-01-01"
+                },
+                { __sheet: "2016",
+                    Movie: "Room",
+                    Nominations: 4,
+                    Date: "2016-01-02"
+                },
+                { __sheet: "2016",
+                    Movie: "The Big Short",
+                    Nominations: 4,
+                    Date: "2016-01-03"
+                },
+                { __sheet: "2016",
+                    Movie: "The Revenant",
+                    Nominations: 4,
+                    Date: "2016-01-04"
+                }
             ])
             done();
         })
