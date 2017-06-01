@@ -63,7 +63,9 @@ Stream.prototype._flush = function (done) {
 
             // extract the header name value from the first row for this col
             var h = sheet[col + '1'].v
-            data[row][h] = sheet[k].v
+            // extract the formatted value (if applicable)
+            // https://www.npmjs.com/package/xlsx#cell-object
+            data[row][h] = sheet[k].w || sheet[k].v
         }
 
         // the data list may contain some empty undefined cells (at rows 0 and
