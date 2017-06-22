@@ -35,7 +35,9 @@ structurize.guess = function ( sample, options ) {
     // new lines to be considered as csv (only if no other option is valid).
     // Also, we can't move the csv test to the end since the list must be
     // ordered by relevancy/statistics
-    if (sample.toString().indexOf("\n") >= 0)
+    // since this is not a new format and since this test should always be last
+    // it is best to place it here and not create a new format
+    if (csvModule.isOneColumn(sample))
         return csvModule.type
 }
 
