@@ -12,7 +12,7 @@ module.exports.parser = function ( options ) {
     var csvparse = require( "csv-parse" );
     return csvparse({
         skip_empty_lines: true,
-        escape: options.escape || '"',
+        escape: options.escape || '\\',
         columns: options.columns || true,
         relax: true,
         delimiter: useDelimiter
