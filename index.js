@@ -9,12 +9,14 @@ function structurize ( options ) {
     return new Stream( options );
 }
 
+var csvModule = require( "./formats/csv" )
+
 structurize.formats = [
     require( "./formats/xlsx" ),
     require( "./formats/tar" ),
     require( "./formats/gzip" ),
     require( "./formats/json" ),
-    require( "./formats/csv" ),
+    csvModule,
     require( "./formats/tsv" ),
     require( "./formats/querystring" ),
     require( "./formats/wdl" ),
@@ -27,6 +29,16 @@ structurize.guess = function ( sample, options ) {
             return this.formats[ i ].type;
         }
     }
+    // if no format is suitable and sample has new lines,
+    // consider it as a csv with 1 column
+    // this check must be the last check since we don't want every sample with
+    // new lines to be considered as csv (only if no other option is valid).
+    // Also, we can't move the csv test to the end since the list must be
+    // ordered by relevancy/statistics
+    // since this is not a new format and since this test should always be last
+    // it is best to place it here and not create a new format
+    if (csvModule.isOneColumn(sample))
+        return csvModule.type
 }
 
 structurize.parser = function ( type, options ) {
