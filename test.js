@@ -2,6 +2,33 @@ var assert = require( "assert" );
 var zlib = require( "zlib" );
 var s = require( "./index" );
 var type;
+let expectedCSVData = [
+    {
+        Year: '1997',
+        Make: 'Ford',
+        Model: 'E350',
+        Description: 'ac, abs, moon',
+        Price: '3000.00'
+    }, {
+        Year : '1999',
+        Make : 'Chevy',
+        Model : 'Venture "Extended Edition"',
+        Description : '',
+        Price : '4900.00'
+    }, {
+        Year: '1999',
+        Make: 'Chevy',
+        Model: 'Venture "Extended Edition, Very Large"',
+        Description: '',
+        Price: '5000.00'
+    }, {
+        Year: '1996',
+        Make: 'Jeep',
+        Model: 'Grand Cherokee',
+        Description: 'MUST SELL!\nair, moon roof, loaded',
+        Price: '4799.00'
+    },
+]
 
 it( "guesses xlsx", function () {
     var spreadsheet = require( "fs" ).readFileSync( "./test.xlsx" );
@@ -145,7 +172,7 @@ it( "parses csv with a configured delimiter", function ( done ) {
         .end( csv )
 })
 
-it( "parse csv with a configured escape", function ( done ) {
+it( "parse csv with a configured escape (\")", function ( done ) {
     var csv = require( "fs" ).readFileSync( "./test-quote-escape.csv" );
     var data = [];
     s.parser( "csv", { escape: '"' } )
@@ -153,33 +180,22 @@ it( "parse csv with a configured escape", function ( done ) {
             data.push( d )
         })
         .once( "end", function () {
-            assert.deepEqual( data, [
-                {
-                    Year: '1997',
-                    Make: 'Ford',
-                    Model: 'E350',
-                    Description: 'ac, abs, moon',
-                    Price: '3000.00'
-                }, {
-                    Year : '1999',
-                    Make : 'Chevy',
-                    Model : 'Venture "Extended Edition"',
-                    Description : '',
-                    Price : '4900.00'
-                }, {
-                    Year: '1999',
-                    Make: 'Chevy',
-                    Model: 'Venture "Extended Edition, Very Large"',
-                    Description: '',
-                    Price: '5000.00'
-                }, {
-                    Year: '1996',
-                    Make: 'Jeep',
-                    Model: 'Grand Cherokee',
-                    Description: 'MUST SELL!\nair, moon roof, loaded',
-                    Price: '4799.00'
-                },
-            ])
+            assert.deepEqual( data, expectedCSVData)
+            done();
+        })
+        .once( "error", done )
+        .end( csv )
+})
+
+it( "parse csv with a default escape (\\\\)", function ( done ) {
+    var csv = require( "fs" ).readFileSync( "./test-backslash-escape.csv" );
+    var data = [];
+    s.parser( "csv", {} )
+        .on( "data", function ( d ) {
+            data.push( d )
+        })
+        .once( "end", function () {
+            assert.deepEqual( data, expectedCSVData)
             done();
         })
         .once( "error", done )
