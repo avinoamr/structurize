@@ -187,7 +187,7 @@ it( "parse csv with a configured escape (\")", function ( done ) {
         .end( csv )
 })
 
-it( "parse csv with a default escape (\\\\)", function ( done ) {
+it( "parse csv with a default escape (\\)", function ( done ) {
     var csv = require( "fs" ).readFileSync( "./test-backslash-escape.csv" );
     var data = [];
     s.parser( "csv", {} )
