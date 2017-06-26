@@ -2,6 +2,36 @@ var assert = require( "assert" );
 var zlib = require( "zlib" );
 var s = require( "./index" );
 var type;
+var expectedCSVData = [
+    {
+        Year: '1997',
+        Make: 'Ford',
+        Model: 'E350',
+        Description: 'ac, abs, moon',
+        Price: '3000.00'
+    },
+    {
+        Year : '1999',
+        Make : 'Chevy',
+        Model : 'Venture "Extended Edition"',
+        Description : '',
+        Price : '4900.00'
+    },
+    {
+        Year: '1999',
+        Make: 'Chevy',
+        Model: 'Venture "Extended Edition, Very Large"',
+        Description: '',
+        Price: '5000.00'
+    },
+    {
+        Year: '1996',
+        Make: 'Jeep',
+        Model: 'Grand Cherokee',
+        Description: 'MUST SELL!\nair, moon roof, loaded',
+        Price: '4799.00'
+    },
+]
 
 it( "guesses xlsx", function () {
     var spreadsheet = require( "fs" ).readFileSync( "./test.xlsx" );
@@ -27,6 +57,11 @@ it( "guesses json", function () {
 
 it( "guesses csv", function () {
     type = s.guess( new Buffer( "hello,world,foo,bar" ) );
+    assert.equal( type, "csv" );
+})
+
+it( "guesses csv with 1 column", function () {
+    type = s.guess( new Buffer( "hello\nworld\nfoo\nbar" ) );
     assert.equal( type, "csv" );
 })
 
@@ -134,6 +169,36 @@ it( "parses csv with a configured delimiter", function ( done ) {
             assert.deepEqual( data, [
                 { hello: '1', world: '2' }
             ])
+            done();
+        })
+        .once( "error", done )
+        .end( csv )
+})
+
+it( "parse csv with a configured escape (\")", function ( done ) {
+    var csv = require( "fs" ).readFileSync( "./test-quote-escape.csv" );
+    var data = [];
+    s.parser( "csv", { escape: '"' } )
+        .on( "data", function ( d ) {
+            data.push( d )
+        })
+        .once( "end", function () {
+            assert.deepEqual( data, expectedCSVData)
+            done();
+        })
+        .once( "error", done )
+        .end( csv )
+})
+
+it( "parse csv with a default escape (\\)", function ( done ) {
+    var csv = require( "fs" ).readFileSync( "./test-backslash-escape.csv" );
+    var data = [];
+    s.parser( "csv", {} )
+        .on( "data", function ( d ) {
+            data.push( d )
+        })
+        .once( "end", function () {
+            assert.deepEqual( data, expectedCSVData)
             done();
         })
         .once( "error", done )
