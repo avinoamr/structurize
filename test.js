@@ -2,26 +2,29 @@ var assert = require( "assert" );
 var zlib = require( "zlib" );
 var s = require( "./index" );
 var type;
-let expectedCSVData = [
+var expectedCSVData = [
     {
         Year: '1997',
         Make: 'Ford',
         Model: 'E350',
         Description: 'ac, abs, moon',
         Price: '3000.00'
-    }, {
+    },
+    {
         Year : '1999',
         Make : 'Chevy',
         Model : 'Venture "Extended Edition"',
         Description : '',
         Price : '4900.00'
-    }, {
+    },
+    {
         Year: '1999',
         Make: 'Chevy',
         Model: 'Venture "Extended Edition, Very Large"',
         Description: '',
         Price: '5000.00'
-    }, {
+    },
+    {
         Year: '1996',
         Make: 'Jeep',
         Model: 'Grand Cherokee',
