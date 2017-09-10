@@ -93,6 +93,21 @@ it( "parses xlsx", function ( done ) {
         })
         .once("end", function () {
             assert.deepEqual( data, [
+                { __sheet: "2018",
+                    Movie: "Back to the future",
+                    Nominations: 5,
+                    Date: "2017-01-01"
+                },
+                { __sheet: "2018",
+                    Movie: "Back to the future 2",
+                    Nominations: 5,
+                    Date: "2017-01-02"
+                },
+                { __sheet: "2018",
+                    Movie: "Back to the future 3",
+                    Nominations: 4,
+                    Date: "2017-01-03"
+                },
                 { __sheet: "2017",
                     Movie: "La La Land",
                     Nominations: 5,
