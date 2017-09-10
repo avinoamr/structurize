@@ -44,6 +44,8 @@ Stream.prototype._flush = function (done) {
     workbook.SheetNames.forEach(function (name) {
         var sheet = workbook.Sheets[name]
         var data = []
+        // Find the first row of the table
+        var headerRow = Object.keys(sheet)[1].match(regexp)[2][0]
         for (var k in sheet) {
             if (k[0] == '!') {
                 continue // Only keep normal cells, not metadata.
@@ -53,7 +55,7 @@ Stream.prototype._flush = function (done) {
             var comps = k.match(regexp)
             var col = comps[1]
             var row = comps[2]
-            if (row == '1') {
+            if (row == headerRow) {
                 continue // first row is reserved as the header line
             }
 
@@ -62,7 +64,7 @@ Stream.prototype._flush = function (done) {
             }
 
             // extract the header name value from the first row for this col
-            var h = sheet[col + '1'].v
+            var h = sheet[col + headerRow].v
             // extract the formatted value (if applicable)
             // https://www.npmjs.com/package/xlsx#cell-object
             data[row][h] = sheet[k].w || sheet[k].v
