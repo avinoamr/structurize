@@ -40,20 +40,36 @@ Stream.prototype._flush = function (done) {
         return
     }
 
-    var regexp = /([A-Z]+)([0-9]+)/i
+    // We will need to split the cell names to columns and rows based on
+    // regexp that will fit data like "A1", "C9"
+    var CellRegexp = /([A-Z]+)([0-9]+)/i
     workbook.SheetNames.forEach(function (name) {
         var sheet = workbook.Sheets[name]
         var data = []
+        // Find the first row of the table
+        try {
+            var sortedSheet = Object.keys(sheet).sort(function(a,b) {
+                // Push metadata to the end of the array
+                if (a[0] === '!') {return 1}
+                else if (b[0] === '!') {return -1}
+                return a.match(CellRegexp)[2] - b.match(CellRegexp)[2]
+            })
+            var CellinFirstRow = sortedSheet[0]
+            var headerRow = CellinFirstRow.match(CellRegexp)[2]
+        } catch (err) {
+            console.warn('No data found in sheet')
+        }
+
         for (var k in sheet) {
             if (k[0] == '!') {
                 continue // Only keep normal cells, not metadata.
             }
 
             // k is a cell name, i.e. "A1", "C9". Split it into the row and col
-            var comps = k.match(regexp)
+            var comps = k.match(CellRegexp)
             var col = comps[1]
             var row = comps[2]
-            if (row == '1') {
+            if (row == headerRow) {
                 continue // first row is reserved as the header line
             }
 
@@ -62,7 +78,7 @@ Stream.prototype._flush = function (done) {
             }
 
             // extract the header name value from the first row for this col
-            var h = sheet[col + '1'].v
+            var h = sheet[col + headerRow].v
             // extract the formatted value (if applicable)
             // https://www.npmjs.com/package/xlsx#cell-object
             data[row][h] = sheet[k].w || sheet[k].v
