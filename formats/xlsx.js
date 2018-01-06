@@ -77,11 +77,18 @@ Stream.prototype._flush = function (done) {
                 data[row] = { __sheet: name }
             }
 
-            // extract the header name value from the first row for this col
-            var h = sheet[col + headerRow].v
-            // extract the formatted value (if applicable)
-            // https://www.npmjs.com/package/xlsx#cell-object
-            data[row][h] = sheet[k].w || sheet[k].v
+            var header = sheet[col + headerRow]
+            if (header) {
+                // extract the header name value from the first row for this col
+                var h =  header.v
+                // extract the formatted value (if applicable)
+                // https://www.npmjs.com/package/xlsx#cell-object
+                data[row][h] = sheet[k].w || sheet[k].v
+            } else {
+                let err = new Error('Unable to parse xlsx file')
+                done(err)
+                return
+            }
         }
 
         // the data list may contain some empty undefined cells (at rows 0 and
